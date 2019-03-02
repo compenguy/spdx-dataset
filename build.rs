@@ -2,7 +2,13 @@ use std::env;
 use std::fs::read_dir;
 use std::fs::File;
 use std::io::Write;
+use std::io::{Read, BufReader};
 use std::path::{Path, PathBuf};
+use std:: collections::BTreeSet;
+
+extern crate sha2;
+
+use sha2::{Sha256, Digest};
 
 pub const SPDX_JSON: &str = concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -19,7 +25,8 @@ fn main() {
     ));
 
     // A collection of all the spdx license file paths
-    let paths: Vec<PathBuf> = read_dir(SPDX_JSON)
+    // it's sorted so that we can generate a stable fingerprint of the data
+    let paths: BTreeSet<PathBuf> = read_dir(SPDX_JSON)
         .expect(&format!(
             "Failed while listing files in the spdx json directory {}",
             SPDX_JSON
@@ -29,6 +36,27 @@ fn main() {
         .collect();
 
     writeln!(f, "use std::collections::HashMap;").expect("Write failed.");
+    writeln!(f, "").expect("Write failed.");
+
+    // Calculate the "fingerprint" of the license collection
+    // this can be used by clients to detect when cached forms of this data should be invalidated
+    let mut hasher = Sha256::new();
+    let mut buffer = [0; 1024];
+
+    for path in &paths {
+        let input = File::open(path).expect("Failed opening spdx json file.");
+        let mut reader = BufReader::new(input);
+        loop {
+            let count = reader.read(&mut buffer).expect("Failed reading spdx json file.");
+            if count == 0 {
+                break;
+            }
+            hasher.input(&buffer[..count]);
+        }
+    }
+    let fingerprint: Vec<u8> = hasher.result()[..].to_vec();
+    writeln!(f, "pub const SPDX_FINGERPRINT: &[u8] = &{:#X?};", &fingerprint).expect("Write failed.");
+
     writeln!(f, "").expect("Write failed.");
     for path in &paths {
         if let Some(var_name) = convert_path_to_variable_name(path) {
