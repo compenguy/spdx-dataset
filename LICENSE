@@ -1,3 +1,5 @@
+Files: modules/license-list-data/**
+
 The licenses contained herein are the intellectual property of their owners.
 They are included on "fair use" grounds.  Some of the contained licenses have
 specific use provisions included granting broader permissions than what may be
@@ -6,6 +8,8 @@ allowed under "fair use".
 The spdx metadata is generated from the xml content the SPDX license-list-XML
 repo (https://github.com/spdx/license-list-XML/), which is CC0-1.0 licensed
 (Public Domain dedication).
+
+Files: ./**
 
 The sources in this crate are, to the degree that they are copyrightable,
 CC0-1.0 licensed as well.
