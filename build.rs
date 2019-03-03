@@ -75,7 +75,7 @@ fn main() {
     writeln!(f, "lazy_static! {{").expect("Write failed.");
     writeln!(
         f,
-        "\tpub static ref SPDX_NAMES: HashMap<&'static str, &'static str> = {{"
+        "\tpub static ref SPDX_LICENSES: HashMap<&'static str, &'static str> = {{"
     )
     .expect("Write failed.");
     writeln!(f, "\t\tlet mut m = HashMap::new();").expect("Write failed.");
