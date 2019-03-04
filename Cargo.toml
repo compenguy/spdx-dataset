@@ -7,6 +7,11 @@ repository = "https://github.com/compenguy/spdx-dataset"
 authors = ["Will Page <compenguy@gmail.com>"]
 license-file = "LICENSE"
 
+[features]
+default = ["json"]
+json = []
+text = []
+
 [dependencies]
 lazy_static = "1.3"
 
