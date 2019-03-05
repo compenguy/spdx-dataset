@@ -113,7 +113,7 @@ fn main() {
     write_spdx(&json_input, &json_output);
 
     let text_input = Path::new(SPDX_TEXT);
-    let text_output = dest_dir.join("text_json.rs");
+    let text_output = dest_dir.join("spdx_text.rs");
     write_spdx(&text_input, &text_output);
 }
 
